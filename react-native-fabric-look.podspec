@@ -11,26 +11,27 @@ Pod::Spec.new do |s|
   s.license      = package["license"]
   s.authors      = package["author"]
 
-  s.platforms    = { :ios => "11.0" }
+  s.platforms    = { :ios => "12.0" }
   s.source       = { :git => "https://github.com/ysfzrn/react-native-fabric-look.git", :tag => "#{s.version}" }
 
-  s.source_files = "ios/**/*.{h,m,mm}"
-
-  s.dependency "React-Core"
+  s.source_files = "ios/**/*.{h,m,mm,swift}"
 
   # Don't install the dependencies when we run `pod install` in the old architecture.
-  if ENV['RCT_NEW_ARCH_ENABLED'] == '1' then
-    s.compiler_flags = folly_compiler_flags + " -DRCT_NEW_ARCH_ENABLED=1"
-    s.pod_target_xcconfig    = {
-        "HEADER_SEARCH_PATHS" => "\"$(PODS_ROOT)/boost\"",
-        "OTHER_CPLUSPLUSFLAGS" => "-DFOLLY_NO_CONFIG -DFOLLY_MOBILE=1 -DFOLLY_USE_LIBCPP=1",
-        "CLANG_CXX_LANGUAGE_STANDARD" => "c++17"
-    }
-    s.dependency "React-RCTFabric"
-    s.dependency "React-Codegen"
-    s.dependency "RCT-Folly"
-    s.dependency "RCTRequired"
-    s.dependency "RCTTypeSafety"
-    s.dependency "ReactCommon/turbomodule/core"
-  end
+    if ENV['RCT_NEW_ARCH_ENABLED'] == '1' then
+      s.compiler_flags = folly_compiler_flags + " -DRCT_NEW_ARCH_ENABLED=1"
+      s.pod_target_xcconfig    = {
+          "DEFINES_MODULE" => "YES",
+          #"HEADER_SEARCH_PATHS" => "\"$(PODS_ROOT)/boost\"",
+          #"OTHER_CPLUSPLUSFLAGS" => "-DFOLLY_NO_CONFIG -DFOLLY_MOBILE=1 -DFOLLY_USE_LIBCPP=1",
+          #"CLANG_CXX_LANGUAGE_STANDARD" => "c++17",
+          "SWIFT_OBJC_INTERFACE_HEADER_NAME" => "react-native-fabric-look-Swift.h",
+          "OTHER_SWIFT_FLAGS" => "-DNATIVE_LIST_PACKAGE_NEW_ARCH_ENABLED"
+      }
+      else
+        s.pod_target_xcconfig = {
+          "DEFINES_MODULE" => "YES",
+          "SWIFT_OBJC_INTERFACE_HEADER_NAME" => "react-native-fabric-look-Swift.h"
+      }
+    end
+    install_modules_dependencies(s)
 end
