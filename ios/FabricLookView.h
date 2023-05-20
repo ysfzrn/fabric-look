@@ -2,6 +2,7 @@
 #ifdef RCT_NEW_ARCH_ENABLED
 #import <React/RCTViewComponentView.h>
 #import <UIKit/UIKit.h>
+#import <React/RCTViewManager.h>
 
 #ifndef FabricLookViewNativeComponent_h
 #define FabricLookViewNativeComponent_h

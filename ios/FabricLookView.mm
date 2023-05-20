@@ -1,13 +1,17 @@
 #ifdef RCT_NEW_ARCH_ENABLED
 #import "FabricLookView.h"
 
+#import <React/RCTConversions.h>
+#import <RCTTypeSafety/RCTConvertHelpers.h>
+
+
 #import <react/renderer/components/RNFabricLookViewSpec/ComponentDescriptors.h>
 #import <react/renderer/components/RNFabricLookViewSpec/EventEmitters.h>
 #import <react/renderer/components/RNFabricLookViewSpec/Props.h>
 #import <react/renderer/components/RNFabricLookViewSpec/RCTComponentViewHelpers.h>
 
 #import "RCTFabricComponentsPlugins.h"
-#import "Utils.h"
+#import "react-native-fabric-look-Swift.h"
 
 using namespace facebook::react;
 
@@ -16,8 +20,14 @@ using namespace facebook::react;
 @end
 
 @implementation FabricLookView {
-    UIView * _view;
+    FabricLookComponent * _view;
 }
+
++ (BOOL)requiresMainQueueSetup
+{
+    return NO;
+}
+
 
 + (ComponentDescriptorProvider)componentDescriptorProvider
 {
@@ -30,7 +40,7 @@ using namespace facebook::react;
     static const auto defaultProps = std::make_shared<const FabricLookViewProps>();
     _props = defaultProps;
 
-    _view = [[UIView alloc] init];
+    _view = [[FabricLookComponent alloc] init];
 
     self.contentView = _view;
   }
@@ -44,8 +54,7 @@ using namespace facebook::react;
     const auto &newViewProps = *std::static_pointer_cast<FabricLookViewProps const>(props);
 
     if (oldViewProps.color != newViewProps.color) {
-        NSString * colorToConvert = [[NSString alloc] initWithUTF8String: newViewProps.color.c_str()];
-        [_view setBackgroundColor: [Utils hexStringToColor:colorToConvert]];
+        [_view setColor:RCTNSStringFromString(newViewProps.color)];
     }
 
     [super updateProps:props oldProps:oldProps];
